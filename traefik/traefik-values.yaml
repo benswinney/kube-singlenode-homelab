@@ -1,0 +1,47 @@
+serviceType: NodePort
+externalTrafficPolicy: Cluster
+replicas: 1
+cpuRequest: 10m
+memoryRequest: 20Mi
+cpuLimit: 100m
+memoryLimit: 30Mi
+debug:
+  enabled: false
+ssl:
+  enabled: true
+acme:
+  enabled: true
+  email: ben@swinney.io
+  staging: false
+  logging: true
+  challengeType: http-01
+  persistence:
+    enabled: true
+    annotations: {}
+    accessMode: ReadWriteOnce
+    size: 1Gi
+dashboard:
+  enabled: true
+  domain: traefik.home.swinney.io 
+  service:
+    annotations:
+      kubernetes.io/ingress.class: traefik
+  auth:
+    basic:
+      admin: Sw*nn3y1234 
+gzip:
+  enabled: true
+accessLogs:
+  enabled: false
+  ## Path to the access logs file. If not provided, Traefik defaults it to stdout.
+  # filePath: ""
+  format: common  # choices are: common, json
+rbac:
+  enabled: true
+## Enable the /metrics endpoint, for now only supports prometheus
+## set to true to enable metric collection by prometheus
+
+deployment:
+  hostPort:
+    httpEnabled: true
+    httpsEnabled: true

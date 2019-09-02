@@ -115,3 +115,17 @@ kubectl patch deploy --namespace kube-system tiller-deploy -p '{"spec":{"templat
 
 # Install Heapster for cluster metrics and health info
 helm install stable/heapster --name heapster --set rbac.create=true
+
+# Install metalLB for Bare-Metal LB
+helm install --name=metallb --namespace=metallb-system -f metallb/metallb-values.yaml stable/metallb --tls
+
+# Install Traefik for LoadBalancing (although single node is set up)
+helm install stable/traefik --name traefik -f traefik/traefik-values.yaml --namespace kube-system
+
+# Another way
+kubectl apply -f traefik/traefik-rbac.yaml
+kubectl apply -f traefik/traefik-ds.yaml
+kubectl apply -f traefik/traefik-ui.yaml
+
+# Final way that works.....
+kubectl apply -f traefik/traefik-deployment.yaml
