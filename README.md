@@ -128,7 +128,7 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0-b
 Change spec.type to LoadBalancer:
 ```shell
 kubectl --namespace kubernetes-dashboard edit service kubernetes-dashboard
-kubectl apply -f dashboard-admin.yaml
+kubectl apply -f dashboard/dashboard-admin.yaml
 ```
 
 ### Get Token for Kubernetes Dashboard
@@ -145,7 +145,7 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6IiJ9.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiw
 ```shell
 kubectl --namespace kubernetes-dashboard get service kubernetes-dashboard
 ```
-Connect via https://<ExternalIP>
+Connect via https://<b><ExternalIP></b>
 
 ### Install Heapster for cluster metrics and health info
 ```shell
