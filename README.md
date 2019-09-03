@@ -62,28 +62,31 @@ cat > /etc/docker/daemon.json <<EOF
 EOF
 ```
 
-mkdir -p /etc/systemd/system/docker.service.d
-# Restart docker.
-systemctl daemon-reload
-systemctl restart docker
+```shell 
+sudo mkdir -p /etc/systemd/system/docker.service.d
+```
 
-apt install -y kubelet kubeadm kubectl
+### Restart docker.
+```shell
+sudo systemctl daemon-reload && sudo systemctl restart docker
+```
 
-Make sure that the br_netfilter module is loaded before this step. This can be done by running:
+### Install Kubernetes Packages
+```shell
+sudo apt install -y kubelet kubeadm kubectl
+```
 
-lsmod | grep br_netfilter
-In order to load it, explicitly call:
+### Initialize Kubernetes node on the master node:
+```shell 
+sudo kubeadm init --config kubeinit.conf
+```
 
-modprobe br_netfilter
-
-Then initialize Kubernetes node on the master node:
-
-kubeadm init --config kubeinit.conf 
-
-# As non-root
-  mkdir -p $HOME/.kube
-  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+#### Allow non-root user to run kubectl and configure Kubernetes
+```shell 
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+```
 
 # Apply network model
 kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
