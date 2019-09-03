@@ -1,16 +1,3 @@
-apiVersion: v1
-kind: Service
-metadata:
-  name: traefik-web-ui
-  namespace: kube-system
-spec:
-  selector:
-    k8s-app: traefik-ingress-lb
-  ports:
-  - name: web
-    port: 80
-    targetPort: 8080
----
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -18,7 +5,7 @@ metadata:
   namespace: kube-system
 spec:
   rules:
-  - host: traefik.home.swinney.io 
+  - host: traefik.home.swinney.io
     http:
       paths:
       - path: /

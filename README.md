@@ -10,13 +10,15 @@ For each node run the following:
 
 Configure repo:
 
-sudo apt update && sudo apt install -y apt-transport-https curl ca-certificates software-properties-common nfs-common
-curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+`sudo apt update && sudo apt install -y apt-transport-https curl ca-certificates software-properties-common nfs-common`
 
-cat <<EOF >/etc/apt/sources.list.d/kubernetes.list
+`curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -`
+
+`cat <<EOF >/etc/apt/sources.list.d/kubernetes.list
 deb https://apt.kubernetes.io/ kubernetes-xenial main
-EOF
-sudo apt update
+EOF`
+
+`sudo apt update`
 
 Disable swap:
 
@@ -84,10 +86,7 @@ kubectl apply -f dashboard-admin.yaml
 kubectl -n kubernetes-dashboard describe secret $(kubectl -n kubernetes-dashboard get secret | grep admin-user | awk '{print $1}')
 
 # Example:
-
 eyJhbGciOiJSUzI1NiIsImtpZCI6IiJ9.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlcm5ldGVzLWRhc2hib2FyZCIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJhZG1pbi11c2VyLXRva2VuLXNtbTQyIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQubmFtZSI6ImFkbWluLXVzZXIiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC51aWQiOiI3YjlkMzk4Ni1kYTQyLTQwMTUtOWI4ZC1mYjgzNzgxM2I1YTciLCJzdWIiOiJzeXN0ZW06c2VydmljZWFjY291bnQ6a3ViZXJuZXRlcy1kYXNoYm9hcmQ6YWRtaW4tdXNlciJ9.jjGAVDeJJBIXe7jzSbmC_azlT5MAnH3yemX81m9Bv9W_I5u2Nm9aezTPZyRnO46UN7Eb2piWH5fUeNCiVZylPQt-FI4L4BGLEl5RWJInckollrSRw2bhEBkdtmEdHWjqsKXNQLV2qbuTin6ZE4lpuMa0PbkCkX-wtdpf0ejnq_PIIEdkOAvrYOKzIO6LHAEkCtK4nFObwEGPUH1yDoIbGCbdlg_xbEx-6Uv7Xz8YfbZ3DBDljcL_tyk8LwmaUWmNryTNclWBXNPOKnqrfkx1DEdj6RXTrG9TIbaIJ8YW324PmYPkPt_MDGQNxDDwpWAgH7BsogOcb7XWRGuix16_pQ
-
-Start kube proxy in a screen:
 
 kubectl proxy &
 
@@ -95,7 +94,6 @@ kubectl proxy &
 kubectl --namespace kubernetes-dashboard get service kubernetes-dashboard
 
 # NFS Storage Provisioner
-
 kubectl create -f nfs-client/deploy/rbac.yaml
 kubectl apply -f nfs-client/deploy/deployment.yaml
 kubectl apply -f nfs-client/deploy/class.yaml
@@ -105,7 +103,6 @@ kubectl patch deployment nfs-client-provisioner -p '{"spec":{"template":{"spec":
 kubectl patch storageclass managed-nfs-storage -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
 
 # Set up helm
-
 kubectl create -f helm/helm-rbac.yaml
 kubectl create serviceaccount --namespace kube-system tiller
 kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
@@ -120,12 +117,13 @@ helm install stable/heapster --name heapster --set rbac.create=true
 helm install --name=metallb --namespace=metallb-system -f metallb/metallb-values.yaml stable/metallb --tls
 
 # Install Traefik for LoadBalancing (although single node is set up)
-helm install stable/traefik --name traefik -f traefik/traefik-values.yaml --namespace kube-system
-
-# Another way
-kubectl apply -f traefik/traefik-rbac.yaml
-kubectl apply -f traefik/traefik-ds.yaml
-kubectl apply -f traefik/traefik-ui.yaml
-
-# Final way that works.....
+kubectl apply -f traefik/traefik-service-acc.yaml
+kubectl apply -f traefik/traefik-cr.yaml
+kubectl apply -f traefik/traefik-crb.yaml
 kubectl apply -f traefik/traefik-deployment.yaml
+kubectl apply -f traefik/traefik-svc.yaml
+kubectl apply -f traefik/traefik-webui-svc.yaml
+kubectl apply -f traefik/traefik-webui-ingress.yaml
+
+
+

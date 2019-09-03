@@ -1,14 +1,11 @@
-serviceType: NodePort
+serviceType: LoadBalancer 
 externalTrafficPolicy: Cluster
 replicas: 1
-cpuRequest: 10m
-memoryRequest: 20Mi
-cpuLimit: 100m
-memoryLimit: 30Mi
 debug:
   enabled: false
 ssl:
   enabled: true
+  enforced: true
 acme:
   enabled: true
   email: ben@swinney.io
@@ -22,13 +19,13 @@ acme:
     size: 1Gi
 dashboard:
   enabled: true
-  domain: traefik.home.swinney.io 
+  domain: traefik.swinney.io 
   service:
     annotations:
       kubernetes.io/ingress.class: traefik
   auth:
     basic:
-      admin: Sw*nn3y1234 
+      admin: $apr1$xcflcQHh$Qvfwl4IUOgryLU0ym1JfW/ 
 gzip:
   enabled: true
 accessLogs:
