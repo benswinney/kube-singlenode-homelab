@@ -1,15 +1,13 @@
-# homelab
-Home Lab Setup
+# Home Lab Setup
+Steps to configure homelab kubernetes cluster - specific to my set up, but could be easily replicated within other environments
 
-# OS
-Ubuntu Bare Metal - 18.04
+### Operating System 
+Bare Metal install of Ubuntu Server 18.04 LTS.
 
-# Kube
+## Kubernetes configuration
+Single node deployment, suits my homelab environment. Will switch to multi-node deployment in the future.
 
-For each node run the following:
-
-Configure repo:
-
+### Configure Kubernetes & Docker Repositories:
 ```shell
 sudo apt update && sudo apt install -y apt-transport-https curl ca-certificates software-properties-common nfs-common
 ```
@@ -20,24 +18,38 @@ curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add
 
 ```shell
 cat <<EOF >/etc/apt/sources.list.d/kubernetes.list
- deb https://apt.kubernetes.io/ kubernetes-xenial main
+deb https://apt.kubernetes.io/ kubernetes-xenial main
 EOF
 ```
 
-`sudo apt update`
+```shell
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo pt-key add -
+```
 
-Disable swap:
+```shell
+sudo add-apt-repository \
+  "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable
+```
 
-swapoff -a
+```shell
+sudo apt update
+```
+
+### Disable Swap:
+
+```shell
+sudo swapoff -a
+```
 Check /etc/fstab file and comment out the swap mounting point
-Install packages:
 
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
-add-apt-repository \
-  "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
-  $(lsb_release -cs) \
-  stable"
-apt-get update && apt-get install docker-ce=18.06.2~ce~3-0~ubuntu
+### Install Docker packages:
+
+```shell
+sudo apt-get install docker-ce=18.06.2~ce~3-0~ubuntu
+```
+
+### Modify Docker to use systemd driver and overlay2 storage driver
+```shell
 cat > /etc/docker/daemon.json <<EOF
 {
   "exec-opts": ["native.cgroupdriver=systemd"],
@@ -48,6 +60,7 @@ cat > /etc/docker/daemon.json <<EOF
   "storage-driver": "overlay2"
 }
 EOF
+```
 
 mkdir -p /etc/systemd/system/docker.service.d
 # Restart docker.
