@@ -10,7 +10,9 @@ For each node run the following:
 
 Configure repo:
 
-`sudo apt update && sudo apt install -y apt-transport-https curl ca-certificates software-properties-common nfs-common`
+```shell
+sudo apt update && sudo apt install -y apt-transport-https curl ca-certificates software-properties-common nfs-common
+```
 
 `curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -`
 
