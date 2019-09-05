@@ -162,3 +162,46 @@ kubectl apply -f traefik/traefik-svc.yaml
 kubectl apply -f traefik/traefik-webui-svc.yaml
 kubectl apply -f traefik/traefik-webui-ingress.yaml
 ```
+## Install homelab utilities
+
+### PiHole Ad Blocker for Kube
+
+### UniFi
+
+### Transmission
+
+## Media Server
+
+## Plex Media Server
+
+
+
+
+## KubeFlow for ML/DL
+
+### Install kfctl
+```shell
+opsys=linux
+
+curl -s https://api.github.com/repos/kubeflow/kubeflow/releases/latest |\
+    grep browser_download |\
+    grep $opsys |\
+    cut -d '"' -f 4 |\
+    xargs curl -O -L && \
+    tar -zvxf kfctl_*_${opsys}.tar.gz
+```
+
+### Install KubeFlow
+```shell
+# Add kfctl to PATH, to make the kfctl binary easier to use.
+export PATH=$PATH:"<path to kfctl>"
+export KFAPP="<your choice of application directory name>"
+
+# Installs Istio by default. Comment out Istio components in the config file to skip Istio installation. See https://github.com/kubeflow/kubeflow/pull/3663
+export CONFIG="https://raw.githubusercontent.com/kubeflow/kubeflow/v0.6-branch/bootstrap/config/kfctl_k8s_istio.0.6.2.yaml"
+
+kfctl init ${KFAPP} --config=${CONFIG} -V
+cd ${KFAPP}
+kfctl generate all -V
+kfctl apply all -V
+```
