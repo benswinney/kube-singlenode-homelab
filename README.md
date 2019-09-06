@@ -170,6 +170,9 @@ A lot of this could be done during the initial Master/Worker build
 
 ### Install Nvidia GPU Drivers
 
+```shell
+TBC
+```
 
 REBOOT!
 
@@ -259,6 +262,34 @@ sudo apt install -y kubelet kubeadm kubectl
 ```
 
 RBEOOT!
+
+### Add Deep Learning Worker node to Cluster
+
+Create token for joining cluster and list it out
+```shell
+kubeadm token create && kubeadm token list 
+```
+
+List token-ca-cert-hash
+```shell
+openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform der 2>/dev/null | \
+   openssl dgst -sha256 -hex | sed 's/^.* //'
+```
+
+On Worker Node
+```shell
+sudo kubeadm join --token <token> <master-ip>:<master-port> --discovery-token-ca-cert-hash sha256:<hash>
+```
+
+Example:
+```shell
+sudo kubeadm join --token zo9ju3.ezaz85c7oha3x9jp kube:6443 --discovery-token-ca-cert-hash sha256:6877abd8a6f646680ad1fd8ef0373d128890715decfbb1724d75431dd8bbdd80
+```
+
+Confirm on master node that the worker node has joined
+```shell
+kubectl get nodes -o wide
+```
 
 ## Install homelab utilities
 
