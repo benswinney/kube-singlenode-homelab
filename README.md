@@ -154,7 +154,7 @@ Connect via https://<b><ExternalIP></b>
 helm install stable/heapster --name heapster --set rbac.create=true
 ```
 
-### Install Traefik for LoadBalancing (although single node is set up)
+### Install Traefik for LoadBalancing/Ingress - We'll use Node-labels to prevent pods being deployed on Deep Learning Worker 
 ```shell
 kubectl apply -f traefik/traefik-service-acc.yaml
 kubectl apply -f traefik/traefik-cr.yaml
