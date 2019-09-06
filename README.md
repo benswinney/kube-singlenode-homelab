@@ -2,10 +2,13 @@
 Steps to configure homelab kubernetes cluster - specific to my set up, but could be easily replicated within other environments
 
 ### Operating System 
-Bare Metal install of Ubuntu Server 18.04 LTS.
+Bare Metal install of Ubuntu Server 18.04 LTS on both Master and Worker nodes
 
 ## Kubernetes Configuration
-Single node deployment, suits my homelab environment. Will switch to multi-node deployment in the future.
+Multi node deployment, with Pods deployable on Master node, suits my homelab environment.
+Deep Learning Worker node is marked for ML/DL deployments only. No other Pods will run on it.
+
+### Master Node
 
 ### Configure Kubernetes & Docker Repositories
 ```shell
@@ -162,7 +165,13 @@ kubectl apply -f traefik/traefik-webui-svc.yaml
 kubectl apply -f traefik/traefik-webui-ingress.yaml
 ```
 
-## Add DeepLearning Worker Node (A lot of this could be done during the initial Master/Worker build)
+## Add DeepLearning Worker Node 
+A lot of this could be done during the initial Master/Worker build
+
+### Install Nvidia GPU Drivers
+
+
+REBOOT!
 
 ```shell
 sudo apt update && sudo apt install -y apt-transport-https curl ca-certificates software-properties-common nfs-common
@@ -243,6 +252,13 @@ sudo mkdir -p /etc/systemd/system/docker.service.d
 ```shell
 sudo systemctl daemon-reload && sudo systemctl restart docker
 ```
+
+### Install Kubernetes Packages
+```shell
+sudo apt install -y kubelet kubeadm kubectl
+```
+
+RBEOOT!
 
 ## Install homelab utilities
 
