@@ -17,9 +17,8 @@ curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add
 ```
 
 ```shell
-cat <<EOF >/etc/apt/sources.list.d/kubernetes.list
-deb https://apt.kubernetes.io/ kubernetes-xenial main
-EOF
+sudo add-apt-repository \
+  "deb https://apt.kubernetes.io/ kubernetes-xenial main"
 ```
 
 ```shell
@@ -28,7 +27,7 @@ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo pt-key add -
 
 ```shell
 sudo add-apt-repository \
-  "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable
+  "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
 ```
 
 ```shell
@@ -162,6 +161,89 @@ kubectl apply -f traefik/traefik-svc.yaml
 kubectl apply -f traefik/traefik-webui-svc.yaml
 kubectl apply -f traefik/traefik-webui-ingress.yaml
 ```
+
+## Add DeepLearning Worker Node (A lot of this could be done during the initial Master/Worker build)
+
+```shell
+sudo apt update && sudo apt install -y apt-transport-https curl ca-certificates software-properties-common nfs-common
+```
+
+```shell
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+```
+
+```shell
+sudo add-apt-repository \
+  "deb https://apt.kubernetes.io/ kubernetes-xenial main"  
+```
+
+```shell
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo pt-key add -
+```
+
+```shell
+sudo add-apt-repository \
+  "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+```
+
+### Add nvidia-docker2 repository for passing GPU's into docker containers
+```shell
+curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add -
+
+distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
+
+curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | sudo tee /etc/apt/sources.list.d/nvidia-docker.list
+```
+
+```shell
+sudo apt update
+```
+
+### Disable Swap
+```shell
+sudo swapoff -a
+```
+Check /etc/fstab file and comment out the swap mounting point
+
+### Install Docker packages
+```shell
+sudo apt-get install docker-ce=18.06.2~ce~3-0~ubuntu
+```
+
+### Install nvidia-docker2
+```shell
+sudo apt-get install nvidia-docker2
+```
+
+### Modify Docker to use systemd driver, overlay2 storage driver and default nvidia-docker2 runtime
+```shell
+cat > /etc/docker/daemon.json <<EOF
+{
+  "exec-opts": ["native.cgroupdriver=systemd"],
+  "log-driver": "json-file",
+  "log-opts": {
+          "max-size": "100m"
+  },
+  "storage-driver": "overlay2",
+  "runtimes": {
+        "nvidia": {
+            "path": "nvidia-container-runtime",
+            "runtimeArgs": []
+        }
+  }
+}
+EOF
+```
+
+```shell 
+sudo mkdir -p /etc/systemd/system/docker.service.d
+```
+
+### Restart docker
+```shell
+sudo systemctl daemon-reload && sudo systemctl restart docker
+```
+
 ## Install homelab utilities
 
 ### PiHole Ad Blocker for Kube
