@@ -237,6 +237,7 @@ cat > /etc/docker/daemon.json <<EOF
           "max-size": "100m"
   },
   "storage-driver": "overlay2",
+  "default-runtime": "nvidia",
   "runtimes": {
         "nvidia": {
             "path": "nvidia-container-runtime",
@@ -290,6 +291,23 @@ Confirm on master node that the worker node has joined
 ```shell
 kubectl get nodes -o wide
 ```
+
+### Add NodeSelector Label to Deep Learning Worker Node
+```shell
+kubectl label nodes deeplab.home.swinney.io workload=mldl
+```
+
+Confirm label has been applied
+```shell
+kubectl get nodes --show-labels
+```
+
+### Enable GPU Support within Kubernetes
+On Master Node, install Nvidia DevicePlugin DaemonSet
+```shell
+kubectl create -f deviceplugins/nvidia-device-plugin.yml
+```
+
 
 ## Install homelab utilities
 
