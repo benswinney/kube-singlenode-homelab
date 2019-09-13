@@ -219,7 +219,7 @@ Check /etc/fstab file and comment out the swap mounting point
 
 ### Install Docker packages
 ```shell
-sudo apt-get install docker-ce=18.06.2~ce~3-0~ubuntu
+sudo apt-get install docker-ce=18.06.2~ce~3-0~ubuntu 
 ```
 
 ### Install nvidia-docker2
@@ -256,7 +256,6 @@ sudo mkdir -p /etc/systemd/system/docker.service.d
 ```shell
 sudo systemctl daemon-reload && sudo systemctl restart docker
 ```
-
 ### Install Kubernetes Packages
 ```shell
 sudo apt install -y kubelet kubeadm kubectl

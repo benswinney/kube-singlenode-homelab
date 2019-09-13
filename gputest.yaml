@@ -1,14 +1,51 @@
-apiVersion: v1
-kind: Pod
+apiVersion: apps/v1
+kind: Deployment 
 metadata:
   name: gpu-pod
+  namespace: default
+  labels:
+    app: powerai-x86
 spec:
-  containers:
-    - name: cuda-container
-      image: nvidia/cuda:latest
-      resources:
-        limits:
-          nvidia.com/gpu: 1
-  nodeSelector: 
-    workload: mldl
-
+  replicas: 1
+  selector:
+    matchLabels:
+      app: powerai-x86
+  template:
+    metadata:
+      labels:
+        app: powerai-x86
+    spec:
+      containers:
+      - name: cuda-container
+        #image: ibmcom/powerai:1.6.1-base-ubuntu18.04-py3-x86_64 
+        image: tensorflow/tensorflow:latest-gpu-jupyter 
+        env:
+        - name: LICENSE
+          value: 'yes'
+        resources:
+          limits:
+            nvidia.com/gpu: 1
+          #livenessProbe:
+          #exec:
+          #  command:
+          #  - bash
+          #  - "-c"
+          #  - nvidia-smi
+          #initialDelaySeconds: 30
+          #timeoutSeconds: 1
+          #periodSeconds: 60
+          #successThreshold: 1
+          #failureThreshold: 3
+          #readinessProbe:
+          #exec:
+          #  command:
+          #  - bash
+          #  - "-c"
+          #  - nvidia-smi
+          #initialDelaySeconds: 30
+          #timeoutSeconds: 1
+          #periodSeconds: 60
+          #successThreshold: 1
+          #failureThreshold: 3
+      nodeSelector: 
+        workload: mldl
