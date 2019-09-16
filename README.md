@@ -48,6 +48,11 @@ Check /etc/fstab file and comment out the swap mounting point
 sudo apt-get install docker-ce=18.06.2~ce~3-0~ubuntu
 ```
 
+### Hold Docker Version
+```shell
+sudo apt-mark hold docker-ce=18.06.2~ce~3-0~ubuntu
+```
+
 ### Modify Docker to use systemd driver and overlay2 storage driver
 ```shell
 cat > /etc/docker/daemon.json <<EOF
@@ -88,11 +93,15 @@ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 ```
 
-### Apply a network model (Flannel)
+### Apply a network model (Flannel or Secure Weave)
 ```shell
 kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
 ```
 
+```shell
+kubectl create secret -n kube-system generic weave-passwd --from-literal=weave-passwd=$(hexdump -n 16 -e '4/4 "%08x" 1 "\n"' /dev/random)
+kubectl apply -n kube-system -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')&password-secret=weave-passwd"
+```
 ### Configure as a single node cluster
 ```shell
 kubectl taint nodes --all node-role.kubernetes.io/master-
@@ -220,6 +229,11 @@ Check /etc/fstab file and comment out the swap mounting point
 ### Install Docker packages
 ```shell
 sudo apt-get install docker-ce=18.06.2~ce~3-0~ubuntu 
+```
+
+### Hold Docker Version
+```shell
+sudo apt-mark hold docker-ce=18.06.2~ce~3-0~ubuntu
 ```
 
 ### Install nvidia-docker2
