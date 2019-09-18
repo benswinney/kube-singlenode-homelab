@@ -185,6 +185,11 @@ kubectl patch deployment nfs-client-provisioner -p '{"spec":{"template":{"spec":
 kubectl patch storageclass managed-nfs-storage -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
 ```
 
+### Install Metric Server
+```shell
+kubectl create -f 1.8-metricserver
+```
+
 ### Install Kubernetes Dashboard
 ```shell
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0-beta1/aio/deploy/recommended.yaml
@@ -214,6 +219,7 @@ kubectl --namespace kubernetes-dashboard get service kubernetes-dashboard
 Connect via https://<b><ExternalIP></b>
 
 ### Install Heapster for cluster metrics and health info
+#### Replaced by Metric Server Deployment, so no longer needed
 ```shell
 helm install stable/heapster --name heapster --set rbac.create=true
 ```
@@ -227,11 +233,6 @@ kubectl apply -f traefik/traefik-deployment.yaml
 kubectl apply -f traefik/traefik-svc.yaml
 kubectl apply -f traefik/traefik-webui-svc.yaml
 kubectl apply -f traefik/traefik-webui-ingress.yaml
-```
-
-## Metric Server
-```shell
-kubectl create -f 1.8-metricserver/*.yaml
 ```
 
 ## Add DeepLearning Worker Node 
