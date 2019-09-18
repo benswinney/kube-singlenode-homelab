@@ -13,6 +13,7 @@ sudo apt install libnss3-tools
 wget https://github.com/FiloSottile/mkcert/releases/download/v1.4.0/mkcert-v1.4.0-linux-amd64
 mv mkcert-v1.4.0-linux-amd64 mkcert
 chmod +x mkcert
+sudo mv mkcert /usr/local/bin/mkcert
 ```
 
 Create x509 Certificates
