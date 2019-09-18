@@ -235,6 +235,16 @@ kubectl apply -f traefik/traefik-webui-svc.yaml
 kubectl apply -f traefik/traefik-webui-ingress.yaml
 ```
 
+### Create Additional NameSpaces
+```shell
+kubectl apply -f namespaces
+```
+
+### Install Prometheus
+```shell
+kubectl apply -f monitoring
+```
+
 ## Add DeepLearning Worker Node 
 A lot of this could be done during the initial Master/Worker build
 
