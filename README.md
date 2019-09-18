@@ -4,6 +4,54 @@ Steps to configure homelab kubernetes cluster - specific to my set up, but could
 ### Operating System 
 Bare Metal install of Ubuntu Server 18.04 LTS on both Master and Worker nodes
 
+## Pre-Reqs
+```shell
+sudo apt install libnss3-tools
+```
+
+```shell
+wget https://github.com/FiloSottile/mkcert/releases/download/v1.4.0/mkcert-v1.4.0-linux-amd64
+mv mkcert-v1.4.0-linux-amd64 mkcert
+chmod +x mkcert
+```
+
+Create x509 Certificates
+```shell
+# install local CA
+mkcert -install
+mkcert '*.home.swinney.io'
+mkdir -p cert && mv *-key.pem cert/key.pem && mv *.pem cert/cert.pem
+```
+
+Install GoLANG
+```shell
+wget https://dl.google.com/go/go1.13.linux-amd64.tar.gz
+sudo tar -xvf go1.13.linux-amd64.tar.gz
+sudo mv go /usr/local
+```
+
+Set GOROOT and GOPATH in .profile
+```shell
+GOROOT=/usr/local/go
+GOPATH=$HOME/go-projects
+PATH=$GOPATH/bin:$GOROOT/bin:$PATH
+```
+
+Install GCC
+```shell
+sudo apt update
+sudo apt install -y gcc
+```
+
+Install CFSSL
+```shell
+sudo apt install golang-cfssl
+```
+
+Install Istioctl
+```shell
+```
+
 ## Kubernetes Configuration
 Multi node deployment, with Pods deployable on Master node, suits my homelab environment.
 Deep Learning Worker node is marked for ML/DL deployments only. No other Pods will run on it.
