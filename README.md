@@ -382,16 +382,18 @@ On Master Node, install Nvidia DevicePlugin DaemonSet
 kubectl create -f deviceplugins/nvidia-device-plugin.yml
 ```
 
-
 ## Install homelab utilities
 
 ### PiHole Ad Blocker for Kube
+```shell
+kubectl apply -f deployments/pihole
+```
 
 ### UniFi
 
 ### Transmission
 
-## Media Server
+### Media Server
 
 ## Plex Media Server
 
