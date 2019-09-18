@@ -1,0 +1,64 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: pihole
+  name: pihole
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pihole
+  template:
+    metadata:
+      labels:
+        app: pihole
+    spec:
+      containers:
+      - env:
+        - name: ServerIP
+          value: 192.168.1.174
+        - name: WEBPASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: password
+              name: pihole-webpassword
+        - name: DNS1
+          value: 192.168.1.1
+        - name: DNS2
+          value: 192.168.1.1
+        - name: TZ
+          value: Australia/Victoria
+        image: pihole/pihole:latest
+        imagePullPolicy: Always 
+        name: pihole
+        ports:
+        - containerPort: 80
+          name: pihole-http
+          protocol: TCP
+        - containerPort: 53
+          name: dns
+          protocol: TCP
+        - containerPort: 53
+          name: dns-udp
+          protocol: UDP
+        - containerPort: 443
+          name: pihole-ssl
+          protocol: TCP
+        - containerPort: 67
+          name: client-udp
+          protocol: UDP
+        volumeMounts:
+        - mountPath: /etc/pihole
+          name: config
+        - mountPath: /etc/dnsmasq.d/02-custom.conf
+          name: custom-dnsmasq
+          subPath: 02-custom.conf
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: pihole-config
+      - configMap:
+          defaultMode: 420
+          name: pihole-custom-dnsmasq
+        name: custom-dnsmasq
