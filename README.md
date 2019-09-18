@@ -27,15 +27,20 @@ mkdir -p cert && mv *-key.pem cert/key.pem && mv *.pem cert/cert.pem
 Install GoLANG
 ```shell
 wget https://dl.google.com/go/go1.13.linux-amd64.tar.gz
-sudo tar -xvf go1.13.linux-amd64.tar.gz
-sudo mv go /usr/local
+tar -xvf go1.13.linux-amd64.tar.gz
+sudo mv go /usr/local/bin
+rm -f go1.13.linux-amd64.tar.gz
+mkdir ~/go-projects
 ```
 
 Set GOROOT and GOPATH in .profile
 ```shell
-GOROOT=/usr/local/go
-GOPATH=$HOME/go-projects
-PATH=$GOPATH/bin:$GOROOT/bin:$PATH
+# set PATH for GoLang
+if [ -d "$HOME/go-projects" ] ; then
+        GOROOT="/usr/local/go"
+        GOPATH="$HOME/go-projects"
+        PATH="$GOPATH/bin:$GOROOT/bin:$PATH"
+fi
 ```
 
 Install GCC
@@ -74,7 +79,7 @@ sudo add-apt-repository \
 ```
 
 ```shell
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo pt-key add -
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 ```
 
 ```shell
