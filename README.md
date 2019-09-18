@@ -224,6 +224,16 @@ Connect via https://<b><ExternalIP></b>
 helm install stable/heapster --name heapster --set rbac.create=true
 ```
 
+### Install SealedSecrets (bitnami-labs)
+```shell
+wget https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.8.3/kubeseal-linux-amd64 -O kubeseal
+sudo install -m 755 kubeseal /usr/local/bin/kubeseal
+
+kubectl apply -f https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.8.3/controller.yaml
+```
+
+
+
 ### Install Traefik for LoadBalancing/Ingress - We'll use Node-labels to prevent pods being deployed on Deep Learning Worker 
 ```shell
 kubectl apply -f traefik/traefik-service-acc.yaml
