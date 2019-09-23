@@ -94,8 +94,10 @@ sudo apt update
 ### Disable Swap
 ```shell
 sudo swapoff -a
+
+sudo sed -i '/ swap / s/^/#/' /etc/fstab
 ```
-Check /etc/fstab file and comment out the swap mounting point
+The `/etc/fstab` file should now be commentted out for the swap mount point
 
 ### Install Docker packages
 ```shell
@@ -121,10 +123,6 @@ cat > /etc/docker/daemon.json <<EOF
 EOF
 ```
 
-```shell 
-sudo mkdir -p /etc/systemd/system/docker.service.d
-```
-
 ### Restart docker
 ```shell
 sudo systemctl daemon-reload && sudo systemctl restart docker
@@ -133,6 +131,11 @@ sudo systemctl daemon-reload && sudo systemctl restart docker
 ### Install Kubernetes Packages
 ```shell
 sudo apt install -y kubelet kubeadm kubectl
+```
+
+### Hold Kuberneted Packages
+```shell
+sudo apt-mark hold kubelet kubeadm kubectl
 ```
 
 ### Initialize Kubernetes node on the master node
